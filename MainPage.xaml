@@ -1,41 +1,286 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SimpleCalculator.MainPage">
+             x:Class="SimpleCalculator.MainPage"
+             Padding="{OnPlatform iOS='0,20,0,0',  Android='0,0,0,0'}"
+             BackgroundColor="{DynamicResource Secondary}">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+    
+    <Grid
+        Padding="0,0"
+        BackgroundColor="#d9d9d9"
+        ColumnSpacing="1"
+        RowSpacing="1">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+        <Label
+        x:Name="result"
+        Grid.ColumnSpan="4"
+        BackgroundColor="Blue"
+        FontAttributes="Bold"
+        FontSize="46"
+        HorizontalTextAlignment="End"
+        LineBreakMode="NoWrap"
+        Text="0"
+        TextColor="Orange"
+        VerticalTextAlignment="Center"/>
 
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
+        <Button 
+            Grid.Row="1" 
+            Grid.Column="0"
+            BackgroundColor="#b3b3b3"
+            Clicked="onClear"
+            CornerRadius="50"
+            Margin="10"
+            Text="C"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
+        <Button 
+            Grid.Row="1" 
+            Grid.Column="1"
+            BackgroundColor="#b3b3b3"
+            Clicked="onPercent"
+            CornerRadius="50"
+            Margin="10"
+            Text="%"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
 
-        </VerticalStackLayout>
-    </ScrollView>
+        <Button 
+            Grid.Row="1" 
+            Grid.Column="2"
+            BackgroundColor="#b3b3b3"
+            Clicked="onDelete"
+            CornerRadius="50"
+            Margin="10"
+            Text="⌫"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="1" 
+            Grid.Column="3"
+            BackgroundColor="#b3b3b3"
+            Clicked="onOperatorSelect"
+            CornerRadius="50"
+            Margin="10"
+            Text="÷"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="2" 
+            Grid.Column="0"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="7"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="2" 
+            Grid.Column="1"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="8"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="2" 
+            Grid.Column="2"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="9"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="2" 
+            Grid.Column="3"
+            BackgroundColor="#b3b3b3"
+            Clicked="onOperatorSelect"
+            CornerRadius="50"
+            Margin="10"
+            Text="×"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="3" 
+            Grid.Column="0"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="4"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="3" 
+            Grid.Column="1"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="5"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="3" 
+            Grid.Column="2"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="6"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="3" 
+            Grid.Column="3"
+            BackgroundColor="#b3b3b3"
+            Clicked="onOperatorSelect"
+            CornerRadius="50"
+            Margin="10"
+            Text="−"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="4" 
+            Grid.Column="0"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="1"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="4" 
+            Grid.Column="1"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="2"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="4" 
+            Grid.Column="2"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="3"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="4" 
+            Grid.Column="3"
+            BackgroundColor="#b3b3b3"
+            Clicked="onOperatorSelect"
+            CornerRadius="50"
+            Margin="10"
+            Text="+"
+            TextColor="#4c4c4c"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="5" 
+            Grid.Column="0"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="00"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="5" 
+            Grid.Column="1"
+            BackgroundColor="White"
+            Clicked="onNumberSelection"
+            CornerRadius="50"
+            Margin="10"
+            Text="0"
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="5" 
+            Grid.Column="2"
+            BackgroundColor="White"
+            Clicked="onColcon"
+            CornerRadius="50"
+            Margin="10"
+            Text=","
+            TextColor="Black"
+            FontSize="28"
+            />
+
+        <Button 
+            Grid.Row="5" 
+            Grid.Column="3"
+            BackgroundColor="Orange"
+            Clicked="onCalculate"
+            CornerRadius="50"
+            Margin="10"
+            Text="="
+            TextColor="White"
+            FontSize="28"
+            />
+
+    </Grid>
 
 </ContentPage>

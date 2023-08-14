@@ -1,24 +1,87 @@
-﻿namespace SimpleCalculator
+﻿using Microsoft.Maui.Graphics.Text;
+
+namespace SimpleCalculator
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        int currentState = 1;
+        string operatorMath;
+        double firstNum, secondNum;
 
         public MainPage()
         {
             InitializeComponent();
+            onClear(this, null);
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        void onNumberSelection(object sender, EventArgs e)
         {
-            count++;
+            Button button = (Button)sender;
+            string btnPressed = button.Text;
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+            if (this.result.Text == "0" || currentState < 0)
+            {
+                this.result.Text = string.Empty;
+                if (btnPressed == "00") { btnPressed = "0"; }
+                if (currentState < 0) { currentState *= -1; }
+            }
+            
+            this.result.Text += btnPressed;
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            double number;
+            if(double.TryParse(this.result.Text, out number))
+            {
+                this.result.Text = number.ToString("N0");
+                if (currentState == 1)
+                {
+                    firstNum = number;
+                }
+                else
+                {
+                    secondNum = number;
+                }
+            }
         }
+
+
+        void onClear(object sender, EventArgs e)
+        { 
+            firstNum = 0;
+            secondNum = 0;
+            currentState = 1;
+            this.result.Text = "0";
+        }
+
+        void onPercent(object sender, EventArgs e) { }
+
+        void onColcon(object sender, EventArgs e) { }
+
+        void onOperatorSelect(object sender, EventArgs e)
+        {
+            currentState = -2;
+            Button button = (Button)sender;
+            string btnPressed = button.Text;
+            operatorMath = btnPressed;
+        }
+
+        void onCalculate(object sender, EventArgs e)
+        {
+            if(currentState == 2)
+            {
+                var result = Calculate.DoCalculation(firstNum, secondNum, operatorMath);
+                this.result.Text = result.ToString();
+                firstNum = result;
+                currentState = -1;
+            }
+        }
+
+        void onDelete(object sender, EventArgs e)
+        {
+            string newResult = this.result.Text;
+            newResult.Remove(newResult.Length - 1, 1);
+            this.result.Text = string.Empty;
+            this.result.Text += newResult; 
+        }
+
     }
 }
