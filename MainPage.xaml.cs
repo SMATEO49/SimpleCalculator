@@ -8,15 +8,15 @@ namespace SimpleCalculator
         string operatorMath;
         double firstNum, secondNum;
 
-        NumberFormatInfo culture = Thread.CurrentThread.CurrentCulture.NumberFormat;
+        readonly NumberFormatInfo culture = Thread.CurrentThread.CurrentCulture.NumberFormat;
 
         public MainPage()
         {
             InitializeComponent();
-            onClear(this, null);
+            OnClear(this, null);
         }
 
-        void onNumberSelection(object sender, EventArgs e)
+        void OnNumberSelection(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             string btnPressed = button.Text;
@@ -46,7 +46,7 @@ namespace SimpleCalculator
         }
 
 
-        void onClear(object sender, EventArgs e)
+        void OnClear(object sender, EventArgs e)
         {
             firstNum = 0;
             secondNum = 0;
@@ -54,21 +54,20 @@ namespace SimpleCalculator
             this.result.Text = "0";
         }
 
-        void onPercent(object sender, EventArgs e)
+        void OnPercent(object sender, EventArgs e)
         {
-            double numberP;
-            if (double.TryParse(this.result.Text, culture, out numberP))
+            if (double.TryParse(this.result.Text, culture, out double numberP))
             {
                 numberP /= 100;
                 this.result.Text = numberP.ToString(culture);
             }
         }
 
-        void onColcon(object sender, EventArgs e)
+        void OnColcon(object sender, EventArgs e)
         {
             string colconed = this.result.Text;
             string dec = culture.NumberDecimalSeparator;
-            int place = -1;
+            int place;
 
             place = colconed.IndexOf(dec);
 
@@ -77,8 +76,7 @@ namespace SimpleCalculator
                 colconed = colconed.Remove(colconed.IndexOf(dec), 1);
             }
             this.result.Text = string.Empty;
-            double numberC;
-            if (double.TryParse(colconed, out numberC))
+            if (double.TryParse(colconed, out double numberC))
             {
                 
                 this.result.Text += numberC.ToString(culture);
@@ -86,7 +84,7 @@ namespace SimpleCalculator
             }
         }
 
-        void onOperatorSelect(object sender, EventArgs e)
+        void OnOperatorSelect(object sender, EventArgs e)
         {
             currentState = -2;
             Button button = (Button)sender;
@@ -94,7 +92,7 @@ namespace SimpleCalculator
             operatorMath = btnPressed;
         }
 
-        void onCalculate(object sender, EventArgs e)
+        void OnCalculate(object sender, EventArgs e)
         {
             if (currentState == 2)
             {
@@ -105,7 +103,7 @@ namespace SimpleCalculator
             }
         }
 
-        void onDelete(object sender, EventArgs e)
+        void OnDelete(object sender, EventArgs e)
         {
             string newResult = this.result.Text;
             int len = newResult.Length;
