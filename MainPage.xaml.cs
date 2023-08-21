@@ -4,9 +4,10 @@ namespace SimpleCalculator
 {
     public partial class MainPage : ContentPage
     {
-        int currentState = 1;
-        string operatorMath;
-        double firstNum, secondNum;
+        private int currentState = 0;
+        private string operatorMath, firstString, secondString;
+        private double procentor;
+        private bool ujemna, procentowy;
 
         readonly NumberFormatInfo culture = Thread.CurrentThread.CurrentCulture.NumberFormat;
 
@@ -21,45 +22,100 @@ namespace SimpleCalculator
             Button button = (Button)sender;
             string btnPressed = button.Text;
 
-            if (this.result.Text == "0" || currentState < 0)
+            if (currentState == 0 & btnPressed != "0" & btnPressed != "00")
             {
-                this.result.Text = string.Empty;
-                if (btnPressed == "00") { btnPressed = "0"; }
-                if (currentState < 0) { currentState *= -1; }
-            }
-
-            this.result.Text += btnPressed;
-
-            double number;
-            if (double.TryParse(this.result.Text, culture, out number))
-            {
-                this.result.Text = number.ToString(culture);
-                if (currentState == 1)
+                currentState = 1;
+                if ( ujemna )
                 {
-                    firstNum = number;
+                    firstString = "-";
                 }
                 else
                 {
-                    secondNum = number;
+                    firstString = string.Empty;
                 }
             }
+
+            if (currentState == 2 & btnPressed != "0" & btnPressed != "00")
+            {
+                currentState = 3;
+            }
+
+
+
+            if (currentState == 1)
+            {
+                if (firstString == "0")
+                {
+                    firstString = string.Empty;
+                }
+                firstString += btnPressed;
+                if (double.TryParse(firstString, culture, out double number))
+                {
+                    this.result.Text = number.ToString(culture);
+                }
+            }
+            if (currentState == 3)
+            {
+                secondString += btnPressed;
+                if (double.TryParse(secondString, culture, out double number))
+                {
+                    this.result.Text = number.ToString(culture);
+                }
+            }
+            this.calculation.Text = firstString + operatorMath + secondString;
         }
 
 
         void OnClear(object sender, EventArgs e)
         {
-            firstNum = 0;
-            secondNum = 0;
-            currentState = 1;
+            procentowy = false;
+            procentor = 0;
+            secondString = string.Empty;
+            firstString = "0";
+            currentState = 0;
+            operatorMath = string.Empty;
+            ujemna = false;
             this.result.Text = "0";
+            this.calculation.Text = firstString;
         }
 
         void OnPercent(object sender, EventArgs e)
         {
-            if (double.TryParse(this.result.Text, culture, out double numberP))
+            var result = 0.0;
+            if (currentState == 3)
             {
-                numberP /= 100;
-                this.result.Text = numberP.ToString(culture);
+                if (double.TryParse(firstString, culture, out double numberA) & double.TryParse(secondString, culture, out double numberB))
+                {
+                    numberB /= 100;
+                    if (operatorMath == "+" | operatorMath == "-")
+                    {
+                        procentor = Calculate.DoCalculation(numberA, numberB, "×");
+                        result = Calculate.DoCalculation(numberA, procentor, operatorMath);
+                    }
+                    else
+                    {
+
+                        procentor = numberB;
+                        result = Calculate.DoCalculation(numberA, procentor, operatorMath);
+                    }
+                    
+
+                    this.calculation.Text = firstString + operatorMath + secondString + "%";
+                    firstString = result.ToString(culture);
+                    this.result.Text = firstString;
+                    secondString = string.Empty;
+                    currentState = 2;
+                    procentowy = true;
+                }
+            }
+            else
+            {
+                operatorMath = string.Empty;
+                this.result.Text = "0";
+                currentState = 0;
+                firstString = string.Empty;
+                secondString = string.Empty;
+                this.calculation.Text = "0";
             }
         }
 
@@ -84,37 +140,136 @@ namespace SimpleCalculator
             }
         }
 
-        void OnOperatorSelect(object sender, EventArgs e)
+        void OnOperatorSelect(object sender, EventArgs e)//gotowy
         {
-            currentState = -2;
             Button button = (Button)sender;
             string btnPressed = button.Text;
-            operatorMath = btnPressed;
+            if (currentState == 0 & btnPressed == "-")
+            {
+                
+                if (this.result.Text == "0")
+                {
+                    firstString = "-0";
+                    this.result.Text = firstString;
+                    ujemna = true;
+                }
+                else
+                {
+                    firstString = "0";
+                    this.result.Text = firstString;
+                    ujemna = false;
+                }
+                this.calculation.Text = firstString;
+            }
+            else
+            {
+                if (currentState == 3)//obliczenie przyciskeim dzialania Ans continue
+                {
+                    if(double.TryParse(firstString, culture, out double numberA) & double.TryParse(secondString, culture, out double numberB))
+                    {
+                        var result = Calculate.DoCalculation(numberA, numberB, operatorMath);
+                        operatorMath = btnPressed;
+                        firstString = result.ToString(culture);
+                        secondString = string.Empty;
+                        this.result.Text = firstString;
+                    }
+                }
+                if (currentState == 2 | currentState == 1)//zmiana dzialania
+                {
+                    operatorMath = btnPressed;
+                    this.result.Text = "0";
+                    currentState = 2;
+                    secondString = string.Empty;
+                    this.calculation.Text = firstString + operatorMath;
+                }
+            }            
         }
 
         void OnCalculate(object sender, EventArgs e)
         {
-            if (currentState == 2)
+            if (currentState == 3 | (currentState == 2 & !secondString.Equals(string.Empty, StringComparison.Ordinal) & procentowy == false ))
             {
-                var result = Calculate.DoCalculation(firstNum, secondNum, operatorMath);
-                this.result.Text = result.ToString(culture);
-                firstNum = result;
-                currentState = -1;
+                if (double.TryParse(firstString, culture, out double numberA) & double.TryParse(secondString, culture, out double numberB))
+                {
+                    var result = Calculate.DoCalculation(numberA, numberB, operatorMath);
+                    firstString = result.ToString(culture);
+                    this.result.Text = firstString;
+                    currentState = 2;
+                }
+                this.calculation.Text = firstString;
             }
+            if (procentowy == true)
+            {
+                if (double.TryParse(firstString, culture, out double numberA))
+                {
+                    var result = Calculate.DoCalculation(numberA, procentor, operatorMath);
+
+                    this.calculation.Text = firstString + operatorMath + procentor;
+                    firstString = result.ToString(culture);
+                    this.result.Text = firstString;
+                    secondString = string.Empty;
+                    currentState = 2;
+                    procentowy = true;
+                }
+            }
+
         }
 
         void OnDelete(object sender, EventArgs e)
         {
-            string newResult = this.result.Text;
-            int len = newResult.Length;
-            string outPut = "0";
-
-            if (len > 1)
+            int len;
+            if (currentState == 1)
             {
-                outPut = newResult.Remove(len - 1, 1);
+                len = firstString.Length;
+                if (ujemna == false)
+                {
+                    if (len > 1)
+                    {
+                        firstString = firstString.Remove(len - 1, 1);
+                    }
+                    else
+                    {
+                        currentState = 0;
+                        firstString = "0";
+                    }
+                }
+                else
+                {
+                    if (len > 2)
+                    {
+                        firstString = firstString.Remove(len - 1, 1);
+                    }
+                    if (len == 2)
+                    {
+                        firstString = "-0";
+                    }
+                }
+                this.result.Text = firstString;
             }
-            this.result.Text = string.Empty;
-            this.result.Text += outPut;
+            
+            if (currentState == 2)
+            {
+                operatorMath = string.Empty;
+                currentState = 1;
+                this.result.Text = firstString;
+            }
+
+            if (currentState == 3)
+            {
+                len = secondString.Length;
+                if (len > 1)
+                {
+                   secondString = secondString.Remove(len - 1, 1);
+                }
+                else
+                {
+                    currentState = 2;
+                    secondString = string.Empty;
+                }
+                this.result.Text = secondString;
+                
+            }
+            this.calculation.Text = firstString + operatorMath + secondString;
         }
 
     }
